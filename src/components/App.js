@@ -1,3 +1,7 @@
+import React from 'react';
+import { Route, Switch, Redirect } from 'react-router-dom';
+import Login from './Login';
+import Register from './Register';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
@@ -17,6 +21,7 @@ function App() {
   const [selectedCard, setSelectedCard] = useState(null);
   const [cards, setCards] = useState([]);
   const [currentUser, setCurrentUser] = useState(CurrentUserContext);
+  const [loggedIn, setLoggedIn] = useState(true);
 
   useEffect(() => {
     ApiConfig.getInitialCards().then(data => {
@@ -99,59 +104,69 @@ function App() {
   }
   
   return ( 
-    <CurrentUserContext.Provider value={currentUser}>
-  <div className="body">
-    <div className="page">
-      <Header />
-      <Main
-      onEditProfile={handleEditProfileClick}
-      onAddPlace={handleAddPlaceClick}
-      onEditAvatar={handleEditAvatarClick}
-      onCardClick={handleCardClick}
-      cards={cards}
-      onCardLike={handleCardLike}
-      onCardDelete={handleCardDelete}
+  <CurrentUserContext.Provider value={currentUser}>
+    <div className="body">
+      <div className="page">
+        <Header />
+        <Switch>
+          <Route path="/sign-up">
+              <Register />
+          </Route>
+          <Route path="/sign-in">
+              <Login  />
+          </Route>
+          <Route exact path="/">
+            {loggedIn ? '' : <Redirect to="/sign-in" />}
+                
+                <Main
+                onEditProfile={handleEditProfileClick}
+                onAddPlace={handleAddPlaceClick}
+                onEditAvatar={handleEditAvatarClick}
+                onCardClick={handleCardClick}
+                cards={cards}
+                onCardLike={handleCardLike}
+                onCardDelete={handleCardDelete}
 
-       />
-      <Footer />
+                />
+                <Footer />
+
+              <EditProfilePopup
+                isOpen={isEditProfilePopupOpen}
+                onClose={closeAllPopups}
+                onUpdateUser={handleUpdateUser}
+                />
+
+              <EditAvatarPopup
+                isOpen={isEditAvatarPopupOpen}
+                onClose={closeAllPopups}
+                onUpdateAvatar={handleUpdateAvatar}
+              />
+
+              <PopupWithForm
+                  name="confirm-popup"
+                  title="Вы уверены?"
+                  button="Да"
+                  isOpen={false}
+                  onClose={closeAllPopups}
+                  classNameButton="popup__confirm-button"
+                  classNameTitle="popup__title_confirm-form"
+                  classNameContainer="popup__container_min-height-confirm"
+                  classNameForm="submit-profile-form-handler-confirm">
+              </PopupWithForm>
+              
+              <AddPlacePopup
+                  isOpen={isAddPlacePopupOpen}
+                  onClose={closeAllPopups}
+                  onAddPlace={handleAddPlaceSubmit}
+              />
+              <ImagePopup
+              card={selectedCard}
+              onClose={closeAllPopups}
+              />
+          </Route>
+        </Switch>
+      </div>
     </div>
-
-    <EditProfilePopup
-      isOpen={isEditProfilePopupOpen}
-      onClose={closeAllPopups}
-      onUpdateUser={handleUpdateUser}
-       />
-
-    {/*Сначала идут переменные, потом функции, потом дополнительные классы, затем инпуты и кнопки*/}
-
-    <EditAvatarPopup
-      isOpen={isEditAvatarPopupOpen}
-      onClose={closeAllPopups}
-      onUpdateAvatar={handleUpdateAvatar}
-     />
-
-    <PopupWithForm
-        name="confirm-popup"
-        title="Вы уверены?"
-        button="Да"
-        isOpen={false}
-        onClose={closeAllPopups}
-        classNameButton="popup__confirm-button"
-        classNameTitle="popup__title_confirm-form"
-        classNameContainer="popup__container_min-height-confirm"
-        classNameForm="submit-profile-form-handler-confirm">
-    </PopupWithForm>
-    
-    <AddPlacePopup
-        isOpen={isAddPlacePopupOpen}
-        onClose={closeAllPopups}
-        onAddPlace={handleAddPlaceSubmit}
-    />
-    <ImagePopup
-    card={selectedCard}
-    onClose={closeAllPopups}
-    />
-  </div>
   </CurrentUserContext.Provider>
   );
 }

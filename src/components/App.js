@@ -10,9 +10,12 @@ import PopupWithForm from './PopupWithForm';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
+import * as authorization from './authorization';
+import ProtectedRoute from "./ProtectedRoute";
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import { ApiConfig } from '../utils/api';
 import { useEffect, useState } from 'react';
+
 
 function App() {
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
@@ -21,7 +24,7 @@ function App() {
   const [selectedCard, setSelectedCard] = useState(null);
   const [cards, setCards] = useState([]);
   const [currentUser, setCurrentUser] = useState(CurrentUserContext);
-  const [loggedIn, setLoggedIn] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     ApiConfig.getInitialCards().then(data => {
@@ -102,6 +105,7 @@ function App() {
     })
     .catch(err => console.error(err));
   }
+
   
   return ( 
   <CurrentUserContext.Provider value={currentUser}>
@@ -114,56 +118,72 @@ function App() {
           </Route>
           <Route path="/sign-up">
               <Register />
-          </Route>
-          <Route exact path="/">
-            {loggedIn ? '' : <Redirect to="/sign-in" />}
-                
-                <Main
-                onEditProfile={handleEditProfileClick}
-                onAddPlace={handleAddPlaceClick}
-                onEditAvatar={handleEditAvatarClick}
-                onCardClick={handleCardClick}
-                cards={cards}
-                onCardLike={handleCardLike}
-                onCardDelete={handleCardDelete}
+            </Route>
+            <ProtectedRoute
+              path="/"
+              loggedIn={loggedIn}
+              component={Main}
+              onEditProfile={handleEditProfileClick}
+              onAddPlace={handleAddPlaceClick}
+              onEditAvatar={handleEditAvatarClick}
+              onCardClick={handleCardClick}
+              cards={cards}
+              onCardLike={handleCardLike}
+              onCardDelete={handleCardDelete}
+            />
+            <ProtectedRoute
+            path="/"
+            loggedIn={loggedIn}
+            component={Footer}
+            />
+            <ProtectedRoute
+              path="/"
+              loggedIn={loggedIn}
+              component={EditProfilePopup}
+              isOpen={isEditProfilePopupOpen}
+              onClose={closeAllPopups}
+              onUpdateUser={handleUpdateUser}
+            />
 
-                />
-                <Footer />
+            <ProtectedRoute
+              path="/"
+              loggedIn={loggedIn}
+              component={EditAvatarPopup}
+              isOpen={isEditAvatarPopupOpen}
+              onClose={closeAllPopups}
+              onUpdateAvatar={handleUpdateAvatar}
+            />
 
-              <EditProfilePopup
-                isOpen={isEditProfilePopupOpen}
-                onClose={closeAllPopups}
-                onUpdateUser={handleUpdateUser}
-                />
+            <ProtectedRoute
+              path="/"
+              loggedIn={loggedIn}
+              component={PopupWithForm}
+              name="confirm-popup"
+              title="Вы уверены?"
+              button="Да"
+              isOpen={false}
+              onClose={closeAllPopups}
+              classNameButton="popup__confirm-button"
+              classNameTitle="popup__title_confirm-form"
+              classNameContainer="popup__container_min-height-confirm"
+              classNameForm="submit-profile-form-handler-confirm"
+            />
 
-              <EditAvatarPopup
-                isOpen={isEditAvatarPopupOpen}
-                onClose={closeAllPopups}
-                onUpdateAvatar={handleUpdateAvatar}
-              />
-
-              <PopupWithForm
-                  name="confirm-popup"
-                  title="Вы уверены?"
-                  button="Да"
-                  isOpen={false}
-                  onClose={closeAllPopups}
-                  classNameButton="popup__confirm-button"
-                  classNameTitle="popup__title_confirm-form"
-                  classNameContainer="popup__container_min-height-confirm"
-                  classNameForm="submit-profile-form-handler-confirm">
-              </PopupWithForm>
-              
-              <AddPlacePopup
-                  isOpen={isAddPlacePopupOpen}
-                  onClose={closeAllPopups}
-                  onAddPlace={handleAddPlaceSubmit}
-              />
-              <ImagePopup
+            <ProtectedRoute
+              path="/"
+              loggedIn={loggedIn}
+              component={AddPlacePopup}
+              isOpen={isAddPlacePopupOpen}
+              onClose={closeAllPopups}
+              onAddPlace={handleAddPlaceSubmit}
+            />
+            <ProtectedRoute
+              path="/"
+              loggedIn={loggedIn}
+              component={ImagePopup}
               card={selectedCard}
               onClose={closeAllPopups}
-              />
-          </Route>
+            />
         </Switch>
       </div>
     </div>

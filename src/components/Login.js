@@ -12,7 +12,7 @@ function Login() {
                 <input name="password" className="password authorization__input password-input" placeholder="Пароль" required />
             </label>
             <button type="submit" className="authorization__button">Войти</button>
-        </form>   
+        </form>
     </div>
     );
   }

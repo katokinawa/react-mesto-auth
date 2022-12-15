@@ -54,6 +54,7 @@
 @import url(./blocks/authorization/__button/authorization__button.css);
 @import url(./blocks/authorization/__title/authorization__title.css);
 @import url(./blocks/authorization/__input/authorization__input.css);
+@import url(./blocks/authorization/__link/authorization__link.css);
 /* media */
 @import url(./blocks/page/__header/page__header.css);
 @import url(./blocks/content/__profile/content__profile.css);

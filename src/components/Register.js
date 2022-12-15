@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 
 function Register() {
 
@@ -12,7 +13,10 @@ function Register() {
               <input name="password" className="password authorization__input password-input" placeholder="Пароль" required />
           </label>
           <button type="submit" className="authorization__button">Зарегистрироваться</button>
-      </form>   
+      </form>
+        <Link to="/sign-in" className="authorization__link">
+          Уже зарегистрированы? Войти
+        </Link>
   </div>
   );
 }

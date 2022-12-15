@@ -10,7 +10,7 @@ import PopupWithForm from './PopupWithForm';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
-import * as authorization from './authorization';
+import * as auth from './authorization';
 import ProtectedRoute from "./ProtectedRoute";
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import { ApiConfig } from '../utils/api';
@@ -105,7 +105,9 @@ function App() {
     })
     .catch(err => console.error(err));
   }
-
+  function handleLogin() {
+    setLoggedIn(true)
+  }
   
   return ( 
   <CurrentUserContext.Provider value={currentUser}>
@@ -114,10 +116,15 @@ function App() {
         <Header />
         <Switch>
           <Route path="/sign-in">
-              <Login  />
+              <Login
+              authLogin={auth}
+              handleLogin={handleLogin}
+              />
           </Route>
           <Route path="/sign-up">
-              <Register />
+              <Register
+              authRegister={auth}
+              />
             </Route>
             <ProtectedRoute
               path="/"

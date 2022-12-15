@@ -1,9 +1,10 @@
-
+import { useHistory } from 'react-router-dom';
 import { useState } from 'react';
 function Login(props) {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const history = useHistory();
 
     function handleSetEmail(e) {
         setEmail(e.target.value)
@@ -15,6 +16,11 @@ function Login(props) {
     
       function handleSubmit(e) {
         e.preventDefault();
+        props.authLogin.login(email, password)
+        setEmail('');
+        setPassword('');
+        props.handleLogin();
+        history.push('/');
       }
       
     return (

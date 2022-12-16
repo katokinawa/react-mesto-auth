@@ -68,17 +68,17 @@ class Api {
   changeLikeCardStatus(cardId, isLiked) {
     return fetch(`${this._url}/cards/${cardId}/likes`, {
       headers: this._header,
-      method: `${isLiked ? 'PUT' : 'DELETE'}`,
+      method: `${isLiked ? "PUT" : "DELETE"}`,
     }).then((res) => {
       return this._getResponse(res);
     });
   }
 }
 
-export const api = new Api({
-  url: 'https://mesto.nomoreparties.co/v1/cohort-52',
+export const ApiConfig = new Api({
+  url: "https://mesto.nomoreparties.co/v1/cohort-52",
   headers: {
-    authorization: 'e5ef6c8f-bf2d-4d8f-9be9-29b7fb227f3e',
-    'Content-Type': 'application/json'
-  }
-})
+    authorization: "e5ef6c8f-bf2d-4d8f-9be9-29b7fb227f3e",
+    "Content-Type": "application/json",
+  },
+});

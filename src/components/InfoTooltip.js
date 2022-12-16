@@ -8,15 +8,15 @@ function InfoTooltip(props) {
       <div className={`popup__container popup__infotooltip`}>
         <img
           className="popup__infotooltip-img"
-          src={props.isSuccessTooltipStatus ? yes : no}
+          src={props.isRegistered ? yes : no}
           alt={
-            props.isSuccessTooltipStatus
+            props.isRegistered
               ? "Вы успешно зарегистрировались!"
               : "Что-то пошло не так! Попробуйте еще раз."
           }
         />
         <p className="popup__infotooltip-subtitle">
-          {props.isSuccessTooltipStatus
+          {props.isRegistered
             ? "Вы успешно зарегистрировались!"
             : "Что-то пошло не так! Попробуйте еще раз."}
         </p>

@@ -16,7 +16,12 @@ function Login(props) {
     if (!email || !password) {
       return;
     }
-    props.onLogin({ password, email });
+    setEmail("");
+    setPassword("");
+    props.onLogin({
+      password: password,
+      email: email,
+    });
   };
 
   return (

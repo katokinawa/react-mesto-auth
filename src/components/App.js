@@ -13,31 +13,30 @@ import * as auth from '../utils/authorization';
 import ProtectedRoute from './ProtectedRoute';
 import InfoTooltip from './InfoTooltip';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
-import { ApiConfig } from '../utils/api';
+import { api } from '../utils/api';
 import { useEffect, useState } from 'react';
 
-
 function App() {
-  const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
-  const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
-  const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
+  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
   const [cards, setCards] = useState([]);
-  const [currentUser, setCurrentUser] = useState(CurrentUserContext);
+  const [currentUser, setCurrentUser] = useState({});
   const [loggedIn, setLoggedIn] = useState(false);
-  const [isRegistered, setRegistered] = useState(false);
-  const [isInfoTooltipOpen, setInfoTooltipOpen] = useState(false);
+  const [isSuccessTooltipStatus, setIsSuccessTooltipStatus] = useState(false);
+  const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
   const [email, setEmail] = useState('');
   const history = useHistory();
 
   useEffect(() => {
     if (loggedIn) {
-      ApiConfig.getInitialCards().then(data => {
+      api.getInitialCards().then(data => {
         setCards(data)
       })
         .catch(err => console.error(err));
 
-      ApiConfig.getUserInfo().then(data => {
+      api.getUserInfo().then(data => {
         setCurrentUser(data)
       })
         .catch(err => console.error(err));
@@ -52,29 +51,18 @@ function App() {
         setLoggedIn(true);
         history.push('/');
       })
-        .catch((err) => {
-          if (err.status === 400) {
-            console.log('400 — Токен не передан или передан не в том формате');
-          };
-          if (err.status === 401) {
-            console.log('401 — Переданный токен некорректен');
-          };
-        });
     }
   }, [history]);
 
   function handleRegister(data) {
     auth.register(data).then(() => {
-      setRegistered(true);
-      setInfoTooltipOpen(true);
+      setIsSuccessTooltipStatus(true);
+      setIsInfoTooltipOpen(true);
       history.push('/sign-in');
     })
-      .catch((err) => {
-        if (err.status === 400) {
-          console.log('400 - некорректно заполнено одно из полей');
-        };
-        setRegistered(false);
-        setInfoTooltipOpen(true);
+      .catch(() => {
+        setIsSuccessTooltipStatus(false);
+        setIsInfoTooltipOpen(true);
       });
   };
 
@@ -87,15 +75,9 @@ function App() {
         history.push('/');
       }
     })
-      .catch((err) => {
-        if (err.status === 400) {
-          console.log('400 - не передано одно из полей');
-        };
-        if (err.status === 401) {
-          console.log('401 - пользователь с email не найден');
-        };
-        setRegistered(false);
-        setInfoTooltipOpen(true);
+      .catch(() => {
+        setIsSuccessTooltipStatus(false);
+        setIsInfoTooltipOpen(true);
       });
   };
 
@@ -106,7 +88,7 @@ function App() {
   };
 
   function handleAddPlaceSubmit(name, link) {
-    ApiConfig.generateCard(name, link)
+    api.generateCard(name, link)
       .then(newCard => {
         setCards([newCard, ...cards]);
         closeAllPopups();
@@ -119,14 +101,14 @@ function App() {
     const isLiked = card.likes.some(i => i._id === currentUser._id);
 
     // Отправляем запрос в API и получаем обновлённые данные карточки
-    ApiConfig.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
+    api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
       setCards((state) => state.map((cardForLike) => cardForLike._id === card._id ? newCard : cardForLike));
     })
       .catch(err => console.error(err));
   };
 
   function handleCardDelete(cardForDelete) {
-    ApiConfig.deleteCard(cardForDelete._id).then(() => {
+    api.deleteCard(cardForDelete._id).then(() => {
       setCards((state) => state.filter((arrayWithCard) => {
         return arrayWithCard._id !== cardForDelete._id;
       }));
@@ -135,23 +117,23 @@ function App() {
   };
 
   function closeAllPopups() {
-    setEditProfilePopupOpen(false)
-    setAddPlacePopupOpen(false)
-    setEditAvatarPopupOpen(false)
+    setIsEditProfilePopupOpen(false)
+    setIsAddPlacePopupOpen(false)
+    setIsEditAvatarPopupOpen(false)
     setSelectedCard(null)
-    setInfoTooltipOpen(false)
+    setIsInfoTooltipOpen(false)
   };
 
   function handleEditProfileClick() {
-    setEditProfilePopupOpen(true)
+    setIsEditProfilePopupOpen(true)
   };
 
   function handleAddPlaceClick() {
-    setAddPlacePopupOpen(true)
+    setIsAddPlacePopupOpen(true)
   };
 
   function handleEditAvatarClick() {
-    setEditAvatarPopupOpen(true)
+    setIsEditAvatarPopupOpen(true)
   };
 
   function handleCardClick(card) {
@@ -159,7 +141,7 @@ function App() {
   };
 
   function handleUpdateUser({ name, about }) {
-    ApiConfig.setUserInfo(name, about).then((updateUser) => {
+    api.setUserInfo(name, about).then((updateUser) => {
       setCurrentUser(updateUser)
       closeAllPopups();
     })
@@ -167,7 +149,7 @@ function App() {
   };
 
   function handleUpdateAvatar({ avatar }) {
-    ApiConfig.setUserAvatar(avatar).then((updateAvatar) => {
+    api.setUserAvatar(avatar).then((updateAvatar) => {
       setCurrentUser(updateAvatar);
       closeAllPopups();
     })
@@ -179,8 +161,8 @@ function App() {
       <div className='body'>
         <div className='page'>
           <Header
-          userEmail={email}
-          onSignOut={handleLogout}
+            userEmail={email}
+            onSignOut={handleLogout}
           />
           <Switch>
             <ProtectedRoute exact
@@ -240,7 +222,7 @@ function App() {
             onClose={closeAllPopups}
             onAddPlace={handleAddPlaceSubmit}
           />
-          
+
           <ImagePopup
             card={selectedCard}
             onClose={closeAllPopups}
@@ -249,7 +231,7 @@ function App() {
           <InfoTooltip
             isOpen={isInfoTooltipOpen}
             onClose={closeAllPopups}
-            isRegistered={isRegistered}
+            isSuccessTooltipStatus={isSuccessTooltipStatus}
           />
 
         </div>

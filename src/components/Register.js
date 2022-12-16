@@ -15,25 +15,25 @@ function Register(props) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    props.onRegister({email, password});
+    props.onRegister({ email, password });
   };
-  
+
   return (
-  <div className='authorization'>
+    <div className='authorization'>
       <h2 className='title authorization__title'>Регистрация</h2>
       <form onSubmit={handleSubmit} className='authorization__form' noValidate>
-          <label htmlFor='email'>
-          </label>
-            <input id='email' value={email} onChange={handleSetEmail} type='text' name='email' className='email authorization__input email-input' placeholder='Email' required />
-          <label htmlFor='password'>
-          </label>
-            <input id='password' value={password} onChange={handleSetPassword} type='password' name='password' className='password authorization__input password-input' placeholder='Пароль' required />
-          <button name='register' type='submit' className='authorization__button'>Зарегистрироваться</button>
+        <label htmlFor='email'>
+        </label>
+        <input id='email' value={email} onChange={handleSetEmail} type='text' name='email' className='email authorization__input email-input' placeholder='Email' required />
+        <label htmlFor='password'>
+        </label>
+        <input id='password' value={password} onChange={handleSetPassword} type='password' name='password' className='password authorization__input password-input' placeholder='Пароль' required />
+        <button name='register' type='submit' className='authorization__button'>Зарегистрироваться</button>
       </form>
-        <Link to='/sign-in' className='authorization__link'>
-          Уже зарегистрированы? Войти
-        </Link>
-  </div>
+      <Link to='/sign-in' className='authorization__link'>
+        Уже зарегистрированы? Войти
+      </Link>
+    </div>
   );
 }
 

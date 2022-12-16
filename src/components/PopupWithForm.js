@@ -1,6 +1,6 @@
 function PopupWithForm(props) {
 
-    return (
+  return (
     <section className={`popup ${props.name} ${props.isOpen ? 'popup_opened' : ''}`}>
       <div className={`popup__container ${props.classNameContainer}`}>
         <h2 className={`title popup__title ${props.classNameTitle}`}>{props.title}</h2>
@@ -11,8 +11,7 @@ function PopupWithForm(props) {
         <button type='button' className='popup__close-button' onClick={props.onClose}></button>
       </div>
     </section>
-    );
-  }
-  
-  export default PopupWithForm;
-  
+  );
+}
+
+export default PopupWithForm;

@@ -6,3 +6,7 @@
     text-decoration: none;
     margin-top: 15px;
 }
+
+.authorization__link:hover {
+    opacity: 0.6;
+}

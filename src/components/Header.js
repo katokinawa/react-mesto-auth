@@ -12,12 +12,12 @@ function Header(props) {
           Выйти
         </Link>
       </Route>
-      <Route path="/sign-up">
+      <Route path='/sign-up'>
         <Link to='/sign-in' className='header__link'>
           Войти
         </Link>
       </Route>
-      <Route path="/sign-in">
+      <Route path='/sign-in'>
         <Link to='/sign-up' className='header__link'>
           Регистрация
         </Link>

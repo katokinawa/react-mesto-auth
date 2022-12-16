@@ -4,7 +4,6 @@ import Login from './Login';
 import Register from './Register';
 import Header from './Header';
 import Main from './Main';
-import Footer from './Footer';
 import ImagePopup from './ImagePopup';
 import PopupWithForm from './PopupWithForm';
 import EditProfilePopup from './EditProfilePopup';
@@ -181,7 +180,7 @@ function App() {
         <div className='page'>
           <Header
           userEmail={email}
-          loggedOut={handleLogout}
+          onSignOut={handleLogout}
           />
           <Switch>
             <ProtectedRoute exact
@@ -199,7 +198,7 @@ function App() {
             />
             <Route path='/sign-in'>
               <Login
-                handleLogin={handleLogin}
+                onLogin={handleLogin}
               />
             </Route>
             <Route path='/sign-up'>

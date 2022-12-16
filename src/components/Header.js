@@ -8,7 +8,7 @@ function Header(props) {
     <div className='header__link-wrapper'>
       <Route exact path='/'>
         <p className='header__subtitle'>{props.userEmail}</p>
-        <Link to='/sign-in' className='header__link header__link_grey' onClick={props.loggedOut}>
+        <Link to='/sign-in' className='header__link header__link_grey' onClick={props.onSignOut}>
           Выйти
         </Link>
       </Route>

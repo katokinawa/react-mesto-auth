@@ -25,8 +25,8 @@ function App() {
   const [cards, setCards] = useState([]);
   const [currentUser, setCurrentUser] = useState(CurrentUserContext);
   const [loggedIn, setLoggedIn] = useState(false);
-  const [isRegistered, setIsRegistered] = useState(false);
-  const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
+  const [isRegistered, setRegistered] = useState(false);
+  const [isInfoTooltipOpen, setInfoTooltipOpen] = useState(false);
   const [email, setEmail] = useState('');
   const history = useHistory();
 
@@ -65,16 +65,16 @@ function App() {
 
   function handleRegister(data) {
     auth.register(data).then(() => {
-      setIsRegistered(true);
-      setIsInfoTooltipOpen(true);
+      setRegistered(true);
+      setInfoTooltipOpen(true);
       history.push('/sign-in');
     })
       .catch((err) => {
         if (err.status === 400) {
           console.log('400 - некорректно заполнено одно из полей');
         };
-        setIsRegistered(false);
-        setIsInfoTooltipOpen(true);
+        setRegistered(false);
+        setInfoTooltipOpen(true);
       });
   };
 
@@ -94,8 +94,8 @@ function App() {
         if (err.status === 401) {
           console.log('401 - пользователь с email не найден');
         };
-        setIsRegistered(false);
-        setIsInfoTooltipOpen(true);
+        setRegistered(false);
+        setInfoTooltipOpen(true);
       });
   };
 
@@ -139,7 +139,7 @@ function App() {
     setAddPlacePopupOpen(false)
     setEditAvatarPopupOpen(false)
     setSelectedCard(null)
-    setIsInfoTooltipOpen(false)
+    setInfoTooltipOpen(false)
   };
 
   function handleEditProfileClick() {

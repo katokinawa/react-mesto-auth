@@ -35,11 +35,11 @@ function AddPlacePopup(props) {
         classNameTitle='popup__title_item-form'
         classNameForm='submit-profile-form-handler-add'>
         <label>
-          <input onChange={handleChangeName} id='name' type='text' name='name' className='name popup__input popup__subtitle item-name-input' placeholder='Название' minLength='2' maxLength='40' required />
+          <input value={name} onChange={handleChangeName} id='name' type='text' name='name' className='name popup__input popup__subtitle item-name-input' placeholder='Название' minLength='2' maxLength='40' required />
           <span id='name-error' className='name-error popup__error'></span>
         </label>
         <label>
-          <input onChange={handleChangeLink} id='link' type='url' name='link' className='link popup__input popup__subtitle popup__subtitle_margin_small item-link-input' placeholder='Ссылка на картинку' required />
+          <input value={link} onChange={handleChangeLink} id='link' type='url' name='link' className='link popup__input popup__subtitle popup__subtitle_margin_small item-link-input' placeholder='Ссылка на картинку' required />
           <span id='link-error' className='link-error popup__error popup__error_position_bottom'></span>
         </label>
     </PopupWithForm>

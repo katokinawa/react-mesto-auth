@@ -191,6 +191,18 @@ function App() {
         <div className='page'>
           <Header />
           <Switch>
+            <ProtectedRoute
+              path='/'
+              loggedIn={loggedIn}
+              component={Main}
+              onEditProfile={handleEditProfileClick}
+              onAddPlace={handleAddPlaceClick}
+              onEditAvatar={handleEditAvatarClick}
+              onCardClick={handleCardClick}
+              cards={cards}
+              onCardLike={handleCardLike}
+              onCardDelete={handleCardDelete}
+            />
             <Route path='/sign-in'>
               <Login
                 handleLogin={handleLogin}
@@ -204,18 +216,6 @@ function App() {
             <Route exact path='/'>
               {loggedIn ? <Redirect to='/' /> : <Redirect to='/sign-in' />}
             </Route>
-            <ProtectedRoute exact
-              path='/'
-              loggedIn={loggedIn}
-              component={Main}
-              onEditProfile={handleEditProfileClick}
-              onAddPlace={handleAddPlaceClick}
-              onEditAvatar={handleEditAvatarClick}
-              onCardClick={handleCardClick}
-              cards={cards}
-              onCardLike={handleCardLike}
-              onCardDelete={handleCardDelete}
-            />
           </Switch>
 
           <EditProfilePopup

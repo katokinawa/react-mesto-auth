@@ -46,10 +46,9 @@ function App() {
   }, [loggedIn])
 
   useEffect(() => {
-    const jwt = localStorage.getItem('jwt');
-    if (jwt) {
-      auth
-        .tokenCheck(jwt)
+    const token = localStorage.getItem('jwt');
+    if (token) {
+      auth.tokenCheck(token)
         .then((res) => {
           setEmail(res.data.email);
           setLoggedIn(true);
@@ -64,9 +63,9 @@ function App() {
         });
     }
   }, [history]);
+
   function handleRegister(data) {
-    auth
-      .register(data)
+    auth.register(data)
       .then(() => {
         setIsRegistered(true);
         setIsInfoToolTipOpen(true);
@@ -76,16 +75,13 @@ function App() {
         if (err.status === 400) {
           console.log('400 - некорректно заполнено одно из полей');
         }
-        console.error(err);
         setIsRegistered(false);
         setIsInfoToolTipOpen(true);
-        console.log(setIsInfoToolTipOpen(true))
       });
   }
 
   function handleLogin(data) {
-    auth
-      .login(data)
+    auth.login(data)
       .then((res) => {
         if (res.token) {
           setLoggedIn(true);
@@ -116,10 +112,8 @@ function App() {
         if (err.status === 400) {
           console.log('400 - некорректно заполнено одно из полей');
         }
-        console.error(err);
         setIsRegistered(false);
         setIsInfoToolTipOpen(true);
-        console.log(setIsInfoToolTipOpen(true))
       });
   }
 
@@ -189,10 +183,6 @@ function App() {
       closeAllPopups();
     })
       .catch(err => console.error(err));
-  }
-
-  function handleLogin() {
-    setLoggedIn(true)
   }
 
   return (

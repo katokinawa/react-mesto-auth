@@ -1,4 +1,8 @@
-export const BASE_URL = 'https://auth.nomoreparties.co'
+const BASE_URL = 'https://auth.nomoreparties.co';
+
+function checkRes(res) {
+  return res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
+};
 
 export const register = ({email, password}) => {
   return fetch(`${BASE_URL}/signup`, {
@@ -7,22 +11,10 @@ export const register = ({email, password}) => {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ email: email, password: password}),
+    body: JSON.stringify({ email: email, password: password }),
   })
-    .then((response) => { // Код ответа от сервера
-      try {
-        if (response.status === 200) {
-          return response.json();
-        }
-      } catch (e) {
-        return (e)
-      }
-    })
-    .then((data) => { // Даннные пользователя
-      return data;
-    })
-    .catch((err) => console.log(err));
-}
+    .then(checkRes)
+};
 
 export const login = ({email, password}) => {
   return fetch(`${BASE_URL}/signin`, {
@@ -31,24 +23,19 @@ export const login = ({email, password}) => {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ email: email, password: password}),
+    body: JSON.stringify({ email: email, password: password }),
   })
-    .then(res => res.json())
-    .then((data) => {
-      // сохраняем токен
-      localStorage.setItem('token', data.token);
-    });
-}
+    .then(checkRes)
+};
 
-export const getContent = () => {
+export const tokenCheck = (token) => {
   return fetch(`${BASE_URL}/users/me`, {
     method: 'GET',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
+      'Authorization': `Bearer ${token}`,
     },
   })
-    .then(res => res.json())
-    .then(data => data)
-}
+    .then(checkRes)
+};

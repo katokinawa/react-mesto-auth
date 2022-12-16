@@ -27,7 +27,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState(CurrentUserContext);
   const [loggedIn, setLoggedIn] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
-  const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
+  const [isInfoTooltipOpen, setIsInfoToolTipOpen] = useState(false);
   const [email, setEmail] = useState('');
   const history = useHistory();
 
@@ -48,7 +48,9 @@ function App() {
   useEffect(() => {
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
-      auth.getContent(jwt).then((res) => {
+      auth
+        .tokenCheck(jwt)
+        .then((res) => {
           setEmail(res.data.email);
           setLoggedIn(true);
           history.push('/');
@@ -61,34 +63,37 @@ function App() {
           }
         });
     }
-  }, [history])
-
+  }, [history]);
   function handleRegister(data) {
-    auth.register(data).then(() => {
-      setIsRegistered(true);
-      setIsInfoTooltipOpen(true);
-      history.push('/sign-in');
-    })
+    auth
+      .register(data)
+      .then(() => {
+        setIsRegistered(true);
+        setIsInfoToolTipOpen(true);
+        history.push('/sign-in');
+      })
       .catch((err) => {
         if (err.status === 400) {
           console.log('400 - некорректно заполнено одно из полей');
         }
         console.error(err);
         setIsRegistered(false);
-        setIsInfoTooltipOpen(true);
-        console.log(setIsInfoTooltipOpen(true))
+        setIsInfoToolTipOpen(true);
+        console.log(setIsInfoToolTipOpen(true))
       });
   }
 
   function handleLogin(data) {
-    auth.login(data).then((res) => {
-      if (res.token) {
-        setLoggedIn(true);
-        setEmail(data.email);
-        localStorage.setItem('jwt', res.token);
-        history.push('/');
-      }
-    })
+    auth
+      .login(data)
+      .then((res) => {
+        if (res.token) {
+          setLoggedIn(true);
+          setEmail(data.email);
+          localStorage.setItem('jwt', res.token);
+          history.push('/');
+        }
+      })
       .catch((err) => {
         if (err.status === 400) {
           console.log('400 - не передано одно из полей');
@@ -97,9 +102,27 @@ function App() {
         }
         console.error(err);
         setIsRegistered(false);
-        setIsInfoTooltipOpen(true);
+        setIsInfoToolTipOpen(true);
       });
   }
+
+  function handleRegister(data) {
+    auth.register(data).then(() => {
+      setIsRegistered(true);
+      setIsInfoToolTipOpen(true);
+      history.push('/sign-in');
+    })
+      .catch((err) => {
+        if (err.status === 400) {
+          console.log('400 - некорректно заполнено одно из полей');
+        }
+        console.error(err);
+        setIsRegistered(false);
+        setIsInfoToolTipOpen(true);
+        console.log(setIsInfoToolTipOpen(true))
+      });
+  }
+
   function handleAddPlaceSubmit(name, link) {
     ApiConfig.generateCard(name, link)
       .then(newCard => {
@@ -188,7 +211,7 @@ function App() {
                 handleRegister={handleRegister}
               />
             </Route>
-            <Route>
+            <Route exact path='/'>
               {loggedIn ? <Redirect to='/' /> : <Redirect to='/sign-in' />}
             </Route>
             <ProtectedRoute exact
@@ -241,7 +264,7 @@ function App() {
           <InfoTooltip
             isOpen={isInfoTooltipOpen}
             onClose={closeAllPopups}
-            isSuccessRegistered={isRegistered}
+            isRegisteredistered={isRegistered}
           />
           <Footer />
         </div>

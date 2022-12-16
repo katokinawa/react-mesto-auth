@@ -13,7 +13,7 @@ import * as auth from "../utils/authorization";
 import ProtectedRoute from "./ProtectedRoute";
 import InfoTooltip from "./InfoTooltip";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
-import { ApiConfig } from "../utils/api";
+import { api } from "../utils/api";
 import { useEffect, useState } from "react";
 
 function App() {
@@ -22,22 +22,24 @@ function App() {
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
   const [cards, setCards] = useState([]);
-  const [currentUser, setCurrentUser] = useState(CurrentUserContext);
+  const [currentUser, setCurrentUser] = useState({});
   const [loggedIn, setLoggedIn] = useState(false);
-  const [isRegistered, setRegistered] = useState(false);
+  const [isSuccessTooltipStatus, setIsSuccessTooltipStatus] = useState(false);
   const [isInfoTooltipOpen, setInfoTooltipOpen] = useState(false);
   const [email, setEmail] = useState("");
   const history = useHistory();
 
   useEffect(() => {
     if (loggedIn) {
-      ApiConfig.getInitialCards()
+      api
+        .getInitialCards()
         .then((data) => {
           setCards(data);
         })
         .catch((err) => console.error(err));
 
-      ApiConfig.getUserInfo()
+      api
+        .getUserInfo()
         .then((data) => {
           setCurrentUser(data);
         })
@@ -49,7 +51,7 @@ function App() {
     const token = localStorage.getItem("jwt");
     if (token) {
       auth
-        .tokenCheck(token)
+        .checkToken(token)
         .then((res) => {
           setEmail(res.data.email);
           setLoggedIn(true);
@@ -70,15 +72,12 @@ function App() {
     auth
       .register(data)
       .then(() => {
-        setRegistered(true);
+        setIsSuccessTooltipStatus(true);
         setInfoTooltipOpen(true);
         history.push("/sign-in");
       })
-      .catch((err) => {
-        if (err.status === 400) {
-          console.log("400 - некорректно заполнено одно из полей");
-        }
-        setRegistered(false);
+      .catch(() => {
+        setIsSuccessTooltipStatus(false);
         setInfoTooltipOpen(true);
       });
   }
@@ -94,14 +93,8 @@ function App() {
           history.push("/");
         }
       })
-      .catch((err) => {
-        if (err.status === 400) {
-          console.log("400 - не передано одно из полей");
-        }
-        if (err.status === 401) {
-          console.log("401 - пользователь с email не найден");
-        }
-        setRegistered(false);
+      .catch(() => {
+        setIsSuccessTooltipStatus(false);
         setInfoTooltipOpen(true);
       });
   }
@@ -113,7 +106,8 @@ function App() {
   }
 
   function handleAddPlaceSubmit(name, link) {
-    ApiConfig.generateCard(name, link)
+    api
+      .generateCard(name, link)
       .then((newCard) => {
         setCards([newCard, ...cards]);
         closeAllPopups();
@@ -126,7 +120,8 @@ function App() {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
 
     // Отправляем запрос в API и получаем обновлённые данные карточки
-    ApiConfig.changeLikeCardStatus(card._id, !isLiked)
+    api
+      .changeLikeCardStatus(card._id, !isLiked)
       .then((newCard) => {
         setCards((state) =>
           state.map((cardForLike) =>
@@ -138,7 +133,8 @@ function App() {
   }
 
   function handleCardDelete(cardForDelete) {
-    ApiConfig.deleteCard(cardForDelete._id)
+    api
+      .deleteCard(cardForDelete._id)
       .then(() => {
         setCards((state) =>
           state.filter((arrayWithCard) => {
@@ -174,7 +170,8 @@ function App() {
   }
 
   function handleUpdateUser({ name, about }) {
-    ApiConfig.setUserInfo(name, about)
+    api
+      .setUserInfo(name, about)
       .then((updateUser) => {
         setCurrentUser(updateUser);
         closeAllPopups();
@@ -183,7 +180,8 @@ function App() {
   }
 
   function handleUpdateAvatar({ avatar }) {
-    ApiConfig.setUserAvatar(avatar)
+    api
+      .setUserAvatar(avatar)
       .then((updateAvatar) => {
         setCurrentUser(updateAvatar);
         closeAllPopups();
@@ -257,7 +255,7 @@ function App() {
           <InfoTooltip
             isOpen={isInfoTooltipOpen}
             onClose={closeAllPopups}
-            isRegistered={isRegistered}
+            isSuccess={isSuccessTooltipStatus}
           />
         </div>
       </div>

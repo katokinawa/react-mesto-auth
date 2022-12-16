@@ -16,8 +16,6 @@ function Login(props) {
     if (!email || !password) {
       return;
     }
-    setEmail("");
-    setPassword("");
     props.onLogin({
       password: password,
       email: email,

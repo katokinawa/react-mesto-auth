@@ -1,29 +1,28 @@
 import { useState } from 'react';
 
 function Login(props) {
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSetEmail = (e) => {
     setEmail(e.target.value);
-  }
+  };
   const handleSetPassword = (e) => {
     setPassword(e.target.value);
-  }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!email || !password) {
       return;
-    }
+    };
     setEmail('');
     setPassword('');
     props.handleLogin({
       password: password,
       email: email,
     });
-  }
+  };
 
   return (
     <div className='authorization'>

@@ -1,14 +1,18 @@
+// Импорт иконки галочки и крестика
+import yes from '../images/yes.svg';
+import no from '../images/no.svg';
+
 function InfoTooltip(props) {
   return (
-    <div className={`popup ${props.isOpen ? 'popup_opened' : ''}`}>
-      <div className='popup__content popup__tooltip'>
-        <button className='popup__close-button' type='button' aria-label='Закрыть' onClick={props.onClose} ></button>
-        <img src={props.isRegistered ? '../images/yes.svg' : '../images/no.svg'} alt={props.isRegistered ? 'Вы успешно зарегистрировались!' : 'Что-то пошло не так! Попробуйте еще раз.'} className='popup__tooltip_image'/>
-        <p className='popup__tooltip_info'>
+    <section className={`popup ${props.isOpen ? 'popup_opened' : ''}`}>
+      <div className={`popup__container popup__infotooltip`}>
+        <img className='popup__infotooltip-img' src={props.isRegistered ? yes : no} alt={props.isRegistered ? 'Вы успешно зарегистрировались!' : 'Что-то пошло не так! Попробуйте еще раз.'} />
+        <p className='popup__infotooltip-subtitle'>
           {props.isRegistered ? 'Вы успешно зарегистрировались!' : 'Что-то пошло не так! Попробуйте еще раз.'}
         </p>
+        <button type='button' className='popup__close-button' onClick={props.onClose}></button>
       </div>
-    </div>
+    </section>
   );
 }
 

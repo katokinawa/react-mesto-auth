@@ -27,7 +27,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState(CurrentUserContext);
   const [loggedIn, setLoggedIn] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
-  const [isInfoTooltipOpen, setIsInfoToolTipOpen] = useState(false);
+  const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
   const [email, setEmail] = useState('');
   const history = useHistory();
 
@@ -43,79 +43,68 @@ function App() {
       })
         .catch(err => console.error(err));
     }
-  }, [loggedIn])
+  }, [loggedIn]);
 
   useEffect(() => {
     const token = localStorage.getItem('jwt');
     if (token) {
-      auth.tokenCheck(token)
-        .then((res) => {
-          setEmail(res.data.email);
-          setLoggedIn(true);
-          history.push('/');
-        })
+      auth.tokenCheck(token).then((res) => {
+        setEmail(res.data.email);
+        setLoggedIn(true);
+        history.push('/');
+      })
         .catch((err) => {
           if (err.status === 400) {
             console.log('400 — Токен не передан или передан не в том формате');
-          } else if (err.status === 401) {
+          };
+          if (err.status === 401) {
             console.log('401 — Переданный токен некорректен');
-          }
+          };
         });
     }
   }, [history]);
 
   function handleRegister(data) {
-    auth.register(data)
-      .then(() => {
-        setIsRegistered(true);
-        setIsInfoToolTipOpen(true);
-        history.push('/sign-in');
-      })
-      .catch((err) => {
-        if (err.status === 400) {
-          console.log('400 - некорректно заполнено одно из полей');
-        }
-        setIsRegistered(false);
-        setIsInfoToolTipOpen(true);
-      });
-  }
-
-  function handleLogin(data) {
-    auth.login(data)
-      .then((res) => {
-        if (res.token) {
-          setLoggedIn(true);
-          setEmail(data.email);
-          localStorage.setItem('jwt', res.token);
-          history.push('/');
-        }
-      })
-      .catch((err) => {
-        if (err.status === 400) {
-          console.log('400 - не передано одно из полей');
-        } else if (err.status === 401) {
-          console.log('401 - пользователь с email не найден');
-        }
-        console.error(err);
-        setIsRegistered(false);
-        setIsInfoToolTipOpen(true);
-      });
-  }
-
-  function handleRegister(data) {
     auth.register(data).then(() => {
       setIsRegistered(true);
-      setIsInfoToolTipOpen(true);
+      setIsInfoTooltipOpen(true);
       history.push('/sign-in');
     })
       .catch((err) => {
         if (err.status === 400) {
           console.log('400 - некорректно заполнено одно из полей');
-        }
+        };
         setIsRegistered(false);
-        setIsInfoToolTipOpen(true);
+        setIsInfoTooltipOpen(true);
       });
-  }
+  };
+
+  function handleLogin(data) {
+    auth.login(data).then((res) => {
+      if (res.token) {
+        setLoggedIn(true);
+        setEmail(data.email);
+        localStorage.setItem('jwt', res.token);
+        history.push('/');
+      }
+    })
+      .catch((err) => {
+        if (err.status === 400) {
+          console.log('400 - не передано одно из полей');
+        };
+        if (err.status === 401) {
+          console.log('401 - пользователь с email не найден');
+        };
+        setIsRegistered(false);
+        setIsInfoTooltipOpen(true);
+      });
+  };
+
+  function handleLogout() {
+    setLoggedIn(false);
+    localStorage.removeItem('jwt');
+    history.push('/sign-in');
+  };
 
   function handleAddPlaceSubmit(name, link) {
     ApiConfig.generateCard(name, link)
@@ -124,7 +113,7 @@ function App() {
         closeAllPopups();
       })
       .catch(err => console.error(err));
-  }
+  };
 
   function handleCardLike(card) {
     // Снова проверяем, есть ли уже лайк на этой карточке
@@ -135,7 +124,7 @@ function App() {
       setCards((state) => state.map((cardForLike) => cardForLike._id === card._id ? newCard : cardForLike));
     })
       .catch(err => console.error(err));
-  }
+  };
 
   function handleCardDelete(cardForDelete) {
     ApiConfig.deleteCard(cardForDelete._id).then(() => {
@@ -144,30 +133,31 @@ function App() {
       }));
     })
       .catch(err => console.error(err));
-  }
+  };
 
   function closeAllPopups() {
     setEditProfilePopupOpen(false)
     setAddPlacePopupOpen(false)
     setEditAvatarPopupOpen(false)
     setSelectedCard(null)
-  }
+    setIsInfoTooltipOpen(false)
+  };
 
   function handleEditProfileClick() {
     setEditProfilePopupOpen(true)
-  }
+  };
 
   function handleAddPlaceClick() {
     setAddPlacePopupOpen(true)
-  }
+  };
 
   function handleEditAvatarClick() {
     setEditAvatarPopupOpen(true)
-  }
+  };
 
   function handleCardClick(card) {
     setSelectedCard(card);
-  }
+  };
 
   function handleUpdateUser({ name, about }) {
     ApiConfig.setUserInfo(name, about).then((updateUser) => {
@@ -175,7 +165,7 @@ function App() {
       closeAllPopups();
     })
       .catch(err => console.error(err));
-  }
+  };
 
   function handleUpdateAvatar({ avatar }) {
     ApiConfig.setUserAvatar(avatar).then((updateAvatar) => {
@@ -183,15 +173,18 @@ function App() {
       closeAllPopups();
     })
       .catch(err => console.error(err));
-  }
+  };
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className='body'>
         <div className='page'>
-          <Header />
+          <Header
+          userEmail={email}
+          loggedOut={handleLogout}
+          />
           <Switch>
-            <ProtectedRoute
+            <ProtectedRoute exact
               path='/'
               loggedIn={loggedIn}
               component={Main}
@@ -202,6 +195,7 @@ function App() {
               cards={cards}
               onCardLike={handleCardLike}
               onCardDelete={handleCardDelete}
+              loggedOut={handleLogout}
             />
             <Route path='/sign-in'>
               <Login
@@ -210,7 +204,7 @@ function App() {
             </Route>
             <Route path='/sign-up'>
               <Register
-                handleRegister={handleRegister}
+                onRegister={handleRegister}
               />
             </Route>
             <Route exact path='/'>
@@ -247,16 +241,18 @@ function App() {
             onClose={closeAllPopups}
             onAddPlace={handleAddPlaceSubmit}
           />
+          
           <ImagePopup
             card={selectedCard}
             onClose={closeAllPopups}
           />
+
           <InfoTooltip
             isOpen={isInfoTooltipOpen}
             onClose={closeAllPopups}
-            isRegisteredistered={isRegistered}
+            isRegistered={isRegistered}
           />
-          <Footer />
+
         </div>
       </div>
     </CurrentUserContext.Provider>

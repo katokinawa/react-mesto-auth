@@ -6,17 +6,18 @@ function Register(props) {
   const [password, setPassword] = useState('');
 
   const handleSetEmail = (e) => {
-    setEmail(e.target.value)
-  }
+    setEmail(e.target.value);
+  };
 
   const handleSetPassword = (e) => {
-    setPassword(e.target.value)
-  }
+    setPassword(e.target.value);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    props.handleRegister({email, password});
-  }
+    props.onRegister({email, password});
+  };
+  
   return (
   <div className='authorization'>
       <h2 className='title authorization__title'>Регистрация</h2>

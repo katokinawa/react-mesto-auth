@@ -3,13 +3,13 @@ import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import { useState, useContext, useEffect } from "react";
 
 function EditProfilePopup(props) {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+  const [name, setIsName] = useState("");
+  const [description, setIsDescription] = useState("");
   const currentUser = useContext(CurrentUserContext);
 
   useEffect(() => {
-    setName(currentUser.name || "");
-    setDescription(currentUser.about || "");
+    setIsName(currentUser.name || "");
+    setIsDescription(currentUser.about || "");
   }, [currentUser, props.isOpen]);
 
   function handleSubmit(e) {
@@ -22,10 +22,10 @@ function EditProfilePopup(props) {
   }
 
   function handleChangeName(e) {
-    setName(e.target.value);
+    setIsName(e.target.value);
   }
   function handleChangeDescription(e) {
-    setDescription(e.target.value);
+    setIsDescription(e.target.value);
   }
   return (
     <PopupWithForm

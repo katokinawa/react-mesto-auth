@@ -17,24 +17,24 @@ import { api } from "../utils/api";
 import { useEffect, useState } from "react";
 
 function App() {
-  const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
-  const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
-  const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
-  const [selectedCard, setSelectedCard] = useState(null);
-  const [cards, setCards] = useState([]);
-  const [currentUser, setCurrentUser] = useState({});
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
+  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+  const [selectedCard, setIsSelectedCard] = useState(null);
+  const [cards, setIsCards] = useState([]);
+  const [currentUser, setIsCurrentUser] = useState({});
+  const [loggedIn, setIsLoggedIn] = useState(false);
   const [isSuccessTooltipStatus, setIsSuccessTooltipStatus] = useState(false);
-  const [isInfoTooltipOpen, setInfoTooltipOpen] = useState(false);
-  const [email, setEmail] = useState("");
+  const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
+  const [email, setIsEmail] = useState("");
   const history = useHistory();
 
   useEffect(() => {
     if (loggedIn) {
       Promise.all([api.getInitialCards(), api.getUserInfo()])
         .then(([cards, userData]) => {
-          setCards(cards);
-          setCurrentUser(userData);
+          setIsCards(cards);
+          setIsCurrentUser(userData);
         })
         .catch((err) => console.log(err));
     }
@@ -46,8 +46,8 @@ function App() {
       auth
         .checkToken(token)
         .then((res) => {
-          setEmail(res.data.email);
-          setLoggedIn(true);
+          setIsEmail(res.data.email);
+          setIsLoggedIn(true);
           history.push("/");
         })
         .catch((err) => {
@@ -66,12 +66,12 @@ function App() {
       .register(data)
       .then(() => {
         setIsSuccessTooltipStatus(true);
-        setInfoTooltipOpen(true);
+        setIsInfoTooltipOpen(true);
         history.push("/sign-in");
       })
       .catch(() => {
         setIsSuccessTooltipStatus(false);
-        setInfoTooltipOpen(true);
+        setIsInfoTooltipOpen(true);
       });
   }
 
@@ -80,20 +80,20 @@ function App() {
       .login(data)
       .then((res) => {
         if (res.token) {
-          setLoggedIn(true);
-          setEmail(data.email);
+          setIsLoggedIn(true);
+          setIsEmail(data.email);
           localStorage.setItem("jwt", res.token);
           history.push("/");
         }
       })
       .catch(() => {
         setIsSuccessTooltipStatus(false);
-        setInfoTooltipOpen(true);
+        setIsInfoTooltipOpen(true);
       });
   }
 
   function handleLogout() {
-    setLoggedIn(false);
+    setIsLoggedIn(false);
     localStorage.removeItem("jwt");
     history.push("/sign-in");
   }
@@ -102,7 +102,7 @@ function App() {
     api
       .generateCard(name, link)
       .then((newCard) => {
-        setCards([newCard, ...cards]);
+        setIsCards([newCard, ...cards]);
         closeAllPopups();
       })
       .catch((err) => console.error(err));
@@ -116,7 +116,7 @@ function App() {
     api
       .changeLikeCardStatus(card._id, !isLiked)
       .then((newCard) => {
-        setCards((state) =>
+        setIsCards((state) =>
           state.map((cardForLike) =>
             cardForLike._id === card._id ? newCard : cardForLike
           )
@@ -129,7 +129,7 @@ function App() {
     api
       .deleteCard(cardForDelete._id)
       .then(() => {
-        setCards((state) =>
+        setIsCards((state) =>
           state.filter((arrayWithCard) => {
             return arrayWithCard._id !== cardForDelete._id;
           })
@@ -139,34 +139,34 @@ function App() {
   }
 
   function closeAllPopups() {
-    setEditProfilePopupOpen(false);
-    setAddPlacePopupOpen(false);
-    setEditAvatarPopupOpen(false);
-    setSelectedCard(null);
-    setInfoTooltipOpen(false);
+    setIsEditProfilePopupOpen(false);
+    setIsAddPlacePopupOpen(false);
+    setIsEditAvatarPopupOpen(false);
+    setIsSelectedCard(null);
+    setIsInfoTooltipOpen(false);
   }
 
   function handleEditProfileClick() {
-    setEditProfilePopupOpen(true);
+    setIsEditProfilePopupOpen(true);
   }
 
   function handleAddPlaceClick() {
-    setAddPlacePopupOpen(true);
+    setIsAddPlacePopupOpen(true);
   }
 
   function handleEditAvatarClick() {
-    setEditAvatarPopupOpen(true);
+    setIsEditAvatarPopupOpen(true);
   }
 
   function handleCardClick(card) {
-    setSelectedCard(card);
+    setIsSelectedCard(card);
   }
 
   function handleUpdateUser({ name, about }) {
     api
       .setUserInfo(name, about)
       .then((updateUser) => {
-        setCurrentUser(updateUser);
+        setIsCurrentUser(updateUser);
         closeAllPopups();
       })
       .catch((err) => console.error(err));
@@ -176,7 +176,7 @@ function App() {
     api
       .setUserAvatar(avatar)
       .then((updateAvatar) => {
-        setCurrentUser(updateAvatar);
+        setIsCurrentUser(updateAvatar);
         closeAllPopups();
       })
       .catch((err) => console.error(err));

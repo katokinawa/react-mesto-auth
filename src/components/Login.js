@@ -1,14 +1,14 @@
 import { useState } from "react";
 
 function Login(props) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setIsEmail] = useState("");
+  const [password, setIsPassword] = useState("");
 
-  const handleSetEmail = (e) => {
-    setEmail(e.target.value);
+  const handlesetIsEmail = (e) => {
+    setIsEmail(e.target.value);
   };
-  const handleSetPassword = (e) => {
-    setPassword(e.target.value);
+  const handlesetIsPassword = (e) => {
+    setIsPassword(e.target.value);
   };
 
   const handleSubmit = (e) => {
@@ -30,7 +30,7 @@ function Login(props) {
         <input
           id="email"
           value={email}
-          onChange={handleSetEmail}
+          onChange={handlesetIsEmail}
           type="text"
           name="email"
           className="email authorization__input email-input"
@@ -41,7 +41,7 @@ function Login(props) {
         <input
           id="password"
           value={password}
-          onChange={handleSetPassword}
+          onChange={handlesetIsPassword}
           type="password"
           name="password"
           className="password authorization__input password-input"

@@ -10,6 +10,7 @@
 @import url(./blocks/header/__link/_grey/header__link_grey.css);
 @import url(./blocks/header/__subtitle/header__subtitle.css);
 @import url(./blocks/logo/logo.css);
+@import url(./blocks/logo/_disabled/logo__disabled.css);
 @import url(./blocks/popup/popup.css);
 @import url(./blocks/popup/__title/popup__title.css);
 @import url(./blocks/photo-fullscreen-popup/photo-fullscreen-popup.css);

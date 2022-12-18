@@ -31,19 +31,12 @@ function App() {
 
   useEffect(() => {
     if (loggedIn) {
-      api
-        .getInitialCards()
-        .then((data) => {
-          setCards(data);
+      Promise.all([api.getInitialCards(), api.getUserInfo()])
+        .then(([cards, userData]) => {
+          setCards(cards);
+          setCurrentUser(userData);
         })
-        .catch((err) => console.error(err));
-
-      api
-        .getUserInfo()
-        .then((data) => {
-          setCurrentUser(data);
-        })
-        .catch((err) => console.error(err));
+        .catch((err) => console.log(err));
     }
   }, [loggedIn]);
 

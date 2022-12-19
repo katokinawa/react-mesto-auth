@@ -20,21 +20,21 @@ function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
-  const [selectedCard, setIsSelectedCard] = useState(null);
-  const [cards, setIsCards] = useState([]);
-  const [currentUser, setIsCurrentUser] = useState({});
-  const [loggedIn, setIsLoggedIn] = useState(false);
+  const [selectedCard, setSelectedCard] = useState(null);
+  const [cards, setCards] = useState([]);
+  const [currentUser, setCurrentUser] = useState({});
+  const [loggedIn, setLoggedIn] = useState(false);
   const [isSuccessTooltipStatus, setIsSuccessTooltipStatus] = useState(false);
   const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
-  const [email, setIsEmail] = useState("");
+  const [email, setEmail] = useState("");
   const history = useHistory();
 
   useEffect(() => {
     if (loggedIn) {
       Promise.all([api.getInitialCards(), api.getUserInfo()])
         .then(([cards, userData]) => {
-          setIsCards(cards);
-          setIsCurrentUser(userData);
+          setCards(cards);
+          setCurrentUser(userData);
         })
         .catch((err) => console.log(err));
     }
@@ -46,8 +46,8 @@ function App() {
       auth
         .checkToken(token)
         .then((res) => {
-          setIsEmail(res.data.email);
-          setIsLoggedIn(true);
+          setEmail(res.data.email);
+          setLoggedIn(true);
           history.push("/");
         })
         .catch((err) => {
@@ -80,8 +80,8 @@ function App() {
       .login(data)
       .then((res) => {
         if (res.token) {
-          setIsLoggedIn(true);
-          setIsEmail(data.email);
+          setLoggedIn(true);
+          setEmail(data.email);
           localStorage.setItem("jwt", res.token);
           history.push("/");
         }
@@ -93,7 +93,7 @@ function App() {
   }
 
   function handleLogout() {
-    setIsLoggedIn(false);
+    setLoggedIn(false);
     localStorage.removeItem("jwt");
     history.push("/sign-in");
   }
@@ -102,7 +102,7 @@ function App() {
     api
       .generateCard(name, link)
       .then((newCard) => {
-        setIsCards([newCard, ...cards]);
+        setCards([newCard, ...cards]);
         closeAllPopups();
       })
       .catch((err) => console.error(err));
@@ -116,7 +116,7 @@ function App() {
     api
       .changeLikeCardStatus(card._id, !isLiked)
       .then((newCard) => {
-        setIsCards((state) =>
+        setCards((state) =>
           state.map((cardForLike) =>
             cardForLike._id === card._id ? newCard : cardForLike
           )
@@ -129,7 +129,7 @@ function App() {
     api
       .deleteCard(cardForDelete._id)
       .then(() => {
-        setIsCards((state) =>
+        setCards((state) =>
           state.filter((arrayWithCard) => {
             return arrayWithCard._id !== cardForDelete._id;
           })
@@ -142,7 +142,7 @@ function App() {
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
-    setIsSelectedCard(null);
+    setSelectedCard(null);
     setIsInfoTooltipOpen(false);
   }
 
@@ -159,14 +159,14 @@ function App() {
   }
 
   function handleCardClick(card) {
-    setIsSelectedCard(card);
+    setSelectedCard(card);
   }
 
   function handleUpdateUser({ name, about }) {
     api
       .setUserInfo(name, about)
       .then((updateUser) => {
-        setIsCurrentUser(updateUser);
+        setCurrentUser(updateUser);
         closeAllPopups();
       })
       .catch((err) => console.error(err));
@@ -176,7 +176,7 @@ function App() {
     api
       .setUserAvatar(avatar)
       .then((updateAvatar) => {
-        setIsCurrentUser(updateAvatar);
+        setCurrentUser(updateAvatar);
         closeAllPopups();
       })
       .catch((err) => console.error(err));

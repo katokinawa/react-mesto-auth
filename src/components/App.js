@@ -202,14 +202,17 @@ function App() {
               onCardDelete={handleCardDelete}
               loggedOut={handleLogout}
             />
+            <Route exact path="/">
+              {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+            </Route>
+            <Route path="/*">
+              <Redirect to="/sign-in" />
+            </Route>
             <Route path="/sign-in">
               <Login onLogin={handleLogin} />
             </Route>
             <Route path="/sign-up">
               <Register onRegister={handleRegister} />
-            </Route>
-            <Route exact path="/">
-              {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
             </Route>
           </Switch>
 

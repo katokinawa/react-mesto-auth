@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch, useHistory, Redirect } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import Login from "./Login";
 import Register from "./Register";
 import Header from "./Header";
@@ -27,7 +27,7 @@ function App() {
   const [isSuccessTooltipStatus, setIsSuccessTooltipStatus] = useState(false);
   const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
   const [email, setEmail] = useState("");
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (loggedIn) {
@@ -48,7 +48,7 @@ function App() {
         .then((res) => {
           setEmail(res.data.email);
           setLoggedIn(true);
-          history.push("/");
+          navigate("/");
         })
         .catch((err) => {
           if (err.status === 400) {
@@ -59,7 +59,7 @@ function App() {
           }
         });
     }
-  }, [history]);
+  }, [navigate]);
 
   function handleRegister(data) {
     auth
@@ -67,7 +67,7 @@ function App() {
       .then(() => {
         setIsSuccessTooltipStatus(true);
         setIsInfoTooltipOpen(true);
-        history.push("/sign-in");
+        navigate("/sign-in");
       })
       .catch(() => {
         setIsSuccessTooltipStatus(false);
@@ -83,7 +83,7 @@ function App() {
           setLoggedIn(true);
           setEmail(data.email);
           localStorage.setItem("jwt", res.token);
-          history.push("/");
+          navigate("/");
         }
       })
       .catch(() => {
@@ -95,7 +95,7 @@ function App() {
   function handleLogout() {
     setLoggedIn(false);
     localStorage.removeItem("jwt");
-    history.push("/sign-in");
+    navigate("/sign-in");
   }
 
   function handleAddPlaceSubmit(name, link) {
@@ -187,72 +187,70 @@ function App() {
       <div className="body">
         <div className="page">
           <Header userEmail={email} onSignOut={handleLogout} />
-          <Switch>
-            <ProtectedRoute
-              exact
+          <Routes>
+            <Route
+
               path="/"
-              loggedIn={loggedIn}
-              component={Main}
-              onEditProfile={handleEditProfileClick}
-              onAddPlace={handleAddPlaceClick}
-              onEditAvatar={handleEditAvatarClick}
-              onCardClick={handleCardClick}
-              cards={cards}
-              onCardLike={handleCardLike}
-              onCardDelete={handleCardDelete}
-              loggedOut={handleLogout}
+              element={
+                <ProtectedRoute
+                  loggedIn={loggedIn}
+                  element={Main}
+                  onEditProfile={handleEditProfileClick}
+                  onAddPlace={handleAddPlaceClick}
+                  onEditAvatar={handleEditAvatarClick}
+                  onCardClick={handleCardClick}
+                  cards={cards}
+                  onCardLike={handleCardLike}
+                  onCardDelete={handleCardDelete}
+                  loggedOut={handleLogout}
+                />
+              }
             />
-            <Route exact path="/">
-              {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
-            </Route>
-            <Route path="/*">
-              <Redirect to="/sign-in" />
-            </Route>
-            <Route path="/sign-in">
-              <Login onLogin={handleLogin} />
-            </Route>
-            <Route path="/sign-up">
-              <Register onRegister={handleRegister} />
-            </Route>
-          </Switch>
+            {loggedIn ? (
+              <Route path="/" element={<Main />} />
+            ) : (
+              <Route path="sign-in" element={<Login onLogin={handleLogin} />} />
+            )}
+            <Route path="/sign-in" element={<Login onLogin={handleLogin} />} />
+            <Route path="/sign-up" element={<Register onRegister={handleRegister} />}/>
+            </Routes>
+            <EditProfilePopup
+              isOpen={isEditProfilePopupOpen}
+              onClose={closeAllPopups}
+              onUpdateUser={handleUpdateUser}
+            />
 
-          <EditProfilePopup
-            isOpen={isEditProfilePopupOpen}
-            onClose={closeAllPopups}
-            onUpdateUser={handleUpdateUser}
-          />
+            <EditAvatarPopup
+              isOpen={isEditAvatarPopupOpen}
+              onClose={closeAllPopups}
+              onUpdateAvatar={handleUpdateAvatar}
+            />
 
-          <EditAvatarPopup
-            isOpen={isEditAvatarPopupOpen}
-            onClose={closeAllPopups}
-            onUpdateAvatar={handleUpdateAvatar}
-          />
+            <PopupWithForm
+              name="confirm-popup"
+              title="Вы уверены?"
+              button="Да"
+              isOpen={false}
+              onClose={closeAllPopups}
+              classNameButton="popup__confirm-button"
+              classNameTitle="popup__title_confirm-form"
+              classNameContainer="popup__container_min-height-confirm"
+              classNameForm="submit-profile-form-handler-confirm"
+            ></PopupWithForm>
 
-          <PopupWithForm
-            name="confirm-popup"
-            title="Вы уверены?"
-            button="Да"
-            isOpen={false}
-            onClose={closeAllPopups}
-            classNameButton="popup__confirm-button"
-            classNameTitle="popup__title_confirm-form"
-            classNameContainer="popup__container_min-height-confirm"
-            classNameForm="submit-profile-form-handler-confirm"
-          ></PopupWithForm>
+            <AddPlacePopup
+              isOpen={isAddPlacePopupOpen}
+              onClose={closeAllPopups}
+              onAddPlace={handleAddPlaceSubmit}
+            />
 
-          <AddPlacePopup
-            isOpen={isAddPlacePopupOpen}
-            onClose={closeAllPopups}
-            onAddPlace={handleAddPlaceSubmit}
-          />
+            <ImagePopup card={selectedCard} onClose={closeAllPopups} />
 
-          <ImagePopup card={selectedCard} onClose={closeAllPopups} />
-
-          <InfoTooltip
-            isOpen={isInfoTooltipOpen}
-            onClose={closeAllPopups}
-            isSuccess={isSuccessTooltipStatus}
-          />
+            <InfoTooltip
+              isOpen={isInfoTooltipOpen}
+              onClose={closeAllPopups}
+              isSuccess={isSuccessTooltipStatus}
+            />
         </div>
       </div>
     </CurrentUserContext.Provider>

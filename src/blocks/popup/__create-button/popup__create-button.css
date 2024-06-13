@@ -18,7 +18,7 @@
 
 .popup__create-button:hover {
   background: #000;
-  opacity: 0.8;
+  opacity: .8;
 }
 
 @media screen and (min-width: 880px) {

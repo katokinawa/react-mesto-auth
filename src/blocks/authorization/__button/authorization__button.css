@@ -15,12 +15,12 @@
     margin-top: 173px;
     border-radius: 2px;
 }
-      
+
 .authorization__button:hover {
     background: #ebebeb;
-    opacity: 0.85;
+    opacity: .85;
 }
-      
+
 @media screen and (min-width: 880px) {
 .authorization__button {
     width: 358px;
